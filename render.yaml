@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: personal-gradebook
+    runtime: static
+    buildCommand: echo static-files-ready
+    staticPublishPath: ./public
+    headers:
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+      - path: /*
+        name: Referrer-Policy
+        value: no-referrer
+      - path: /*
+        name: X-Frame-Options
+        value: DENY
+      - path: /*
+        name: Cache-Control
+        value: no-cache

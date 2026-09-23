@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>학생 수행평가 관리</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%232c56dd'/%3E%3Cpath d='m8 16 5 5 11-12' fill='none' stroke='white' stroke-width='3'/%3E%3C/svg%3E">
+<style>
+:root{font-family:'Malgun Gothic',system-ui,sans-serif;color:#1e2b45;background:#f3f5fa;line-height:1.6;font-size:16px;--blue:#2c56dd;--line:#dfe5f0;--muted:#647189}*{box-sizing:border-box}body{margin:0}button,input,select,textarea{font:inherit}button{cursor:pointer}input,select,textarea{border:1px solid #bac6d8;border-radius:8px;padding:9px 11px;background:white;color:inherit;max-width:100%}input,textarea{width:100%}textarea{resize:vertical}button{border:1px solid var(--line);border-radius:8px;padding:9px 16px;color:inherit;background:white}button:hover{border-color:var(--blue)}button:disabled{cursor:default;opacity:.5}button.primary{background:var(--blue);color:white;border-color:var(--blue)}:focus-visible{outline:3px solid #9bb2ff;outline-offset:2px}header{background:white;border-bottom:1px solid var(--line)}.top{max-width:1250px;margin:auto;padding:20px 28px;display:flex;align-items:center;gap:12px;font-weight:700}.mark{background:var(--blue);color:white;width:34px;height:34px;border-radius:9px;text-align:center;padding-top:3px}.save{margin-left:auto;font-size:13px;color:var(--muted);font-weight:400}main{max-width:1250px;margin:30px auto;padding:0 28px}h1{font-size:28px;margin:0 0 4px;letter-spacing:-1px}h2{font-size:20px;margin:0 0 16px}h3{font-size:17px;margin:0 0 8px}p{color:var(--muted);margin:0 0 18px}.tabs{display:flex;gap:7px;margin:24px 0;flex-wrap:wrap}.tabs button{border-color:transparent;background:transparent;color:var(--muted);font-weight:700;padding:12px 18px}.tabs button[aria-selected=true]{background:var(--blue);color:white}.panel{background:white;border:1px solid var(--line);border-radius:15px;padding:25px;margin-bottom:20px}.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:22px}.formrow{display:flex;gap:12px;align-items:end;flex-wrap:wrap}.formrow label{flex:1;min-width:140px}label{display:block;font-size:14px;font-weight:700;margin-bottom:12px}label input,label select,label textarea{display:block;margin-top:6px;font-weight:400}label select{width:100%}.formrow button{margin-bottom:12px}.muted,.small{font-size:14px;color:var(--muted)}.badge{display:inline-block;font-size:13px;border-radius:6px;background:#edf2ff;color:var(--blue);padding:4px 9px}.empty{text-align:center;padding:35px 16px;color:var(--muted);background:#f8faff;border:1px dashed #cbd5e5;border-radius:10px}.evalcard{display:flex;justify-content:space-between;gap:20px;align-items:center;padding:17px 0;border-bottom:1px solid var(--line)}.evalcard:last-child{border:0}.evalcard h3{overflow-wrap:anywhere}.rubricrow{display:grid;grid-template-columns:30px minmax(120px,1.2fr) 95px minmax(150px,1.5fr) auto;gap:12px;align-items:start;border-bottom:1px solid var(--line);padding:18px 0}.rubricrow .idx{padding-top:34px;color:var(--blue);font-weight:700}.rubricrow button{margin-top:28px}.toolbar{display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap}.toolbar label{min-width:220px}.notice{background:#edf2ff;color:#2747a5;border-radius:9px;padding:12px 15px;font-size:14px;margin:15px 0}.error{background:#fff1ef;color:#a33225}.tablewrap{overflow:auto}table{border-collapse:collapse;width:100%;font-size:14px}th,td{padding:13px 12px;border-bottom:1px solid var(--line);text-align:left}th{background:#f6f8fc;color:#55627a;white-space:nowrap}td select{min-width:100px;width:100%}.score{font-weight:700;color:var(--blue);white-space:nowrap}.studentname{min-width:110px}footer{font-size:13px;color:var(--muted);padding:0 0 28px}#message{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#233353;color:white;border-radius:10px;padding:13px 20px;max-width:90%;z-index:10}#message:empty{display:none}[hidden]{display:none!important}@media(max-width:850px){.grid{grid-template-columns:1fr}.rubricrow{grid-template-columns:25px 1fr 90px}.rubricrow .levels{grid-column:2/4}.rubricrow button{grid-column:2/4;margin:0}.rubricrow .idx{grid-row:1/3}.tabs button{flex:1 1 40%;padding:10px}main{padding:0 16px}.top{padding:16px}.panel{padding:18px}.save{max-width:150px;text-align:right}h1{font-size:25px}}
+
+/* Education administration workspace */
+:root{--blue:#1769a8;--line:#d4deea;--muted:#5e7188;background:#e9eff5;color:#24364a}
+body{background:linear-gradient(180deg,#dae9f7 0,#eef3f8 340px,#eef3f8 100%);min-height:100vh}
+header{background:#163e68;border:0;color:white;box-shadow:0 2px 8px #163e6820}
+.top{max-width:1450px;padding:17px 28px}.mark{background:#3b87bd;border-radius:5px}.save{color:#d7e6f5}
+.export{background:#fff;color:#16496f;font-weight:700;white-space:nowrap}.top-actions{margin-left:auto;display:flex;align-items:center;gap:18px}
+main{max-width:1450px;margin-top:26px}.tabs{gap:0;margin:20px 0 24px;border-bottom:3px solid #2774ad;background:#fff;border-radius:6px 6px 0 0;overflow:hidden}.tabs button{flex:1;border-radius:0;color:#42566f;border-right:1px solid #e1e8ef;padding:15px 10px}.tabs button[aria-selected=true]{background:#24699d}
+.panel{border-radius:6px;box-shadow:0 2px 5px #19385505}.panel h2{border-left:4px solid #2c87bd;padding-left:10px}.contextbar{display:flex;gap:20px;align-items:center;background:#fff;padding:14px 20px;border:1px solid var(--line);border-radius:6px;margin-top:18px}.contextbar label{margin:0;min-width:240px}.contextbar select{margin-top:3px}.contextbar .small{margin-left:auto}.breadcrumb{font-size:13px;color:#51718f;margin-bottom:7px}th{background:#eaf1f7;color:#294963;border-top:1px solid #c7d5e3}tbody tr:hover{background:#f5faff}.score{background:#f1f7ff}input,select,textarea,button{border-radius:4px}.notice{border-radius:4px;background:#edf5fc}.error{background:#fff1ef}.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}.metric{background:#f4f8fc;border:1px solid var(--line);padding:16px}.metric strong{display:block;font-size:26px;color:#1769a8}.metric span{font-size:14px;color:var(--muted)}.pending{color:#996b23}.result-note{margin-top:16px}.eval-scope{background:#f1f6fb;padding:14px;border:1px solid var(--line);margin-bottom:18px}.eval-scope label{margin-bottom:0}.contextbar select{max-width:360px}
+@media(max-width:850px){.top{flex-wrap:wrap;padding:14px 16px}.top-actions{gap:10px}.save{display:none}.tabs button{flex:1 1 33%;font-size:14px}.contextbar{flex-wrap:wrap;gap:10px}.contextbar .small{margin-left:0}.metrics{gap:8px}.metric{padding:10px}.metric strong{font-size:21px}}
+.danger{color:#ae352e;border-color:#debab6;background:#fff}.danger:hover{background:#fff1ef;border-color:#ae352e}.danger:disabled{opacity:.45;cursor:default}.student-delete{font-size:14px;padding:5px 12px}
+</style></head><body>
+<header><div class="top"><span class="mark" aria-hidden="true">✓</span>학생 수행평가 관리<div class="top-actions"><span class="save" id="saveState">이 브라우저에 자동 저장</span><button type="button" id="exportExcel" class="export" title="현재 학급의 성적 집계와 루브릭 상세를 XLSX로 저장">엑셀 내보내기 ↓</button></div></div></header><aside class="panel" style="max-width:1394px;margin:20px auto" aria-label="자료 보관과 서버 연결">
+<h2>자료 보관 · 서버 연결</h2>
+<p id="cloudStatus" role="status" aria-live="polite"></p>
+<div class="formrow"><button id="fullBackup" type="button">전체 백업 내려받기</button><label>전체 백업 가져오기<input id="importBackup" type="file" accept=".json,application/json"></label></div>
+<details><summary>무료 서버 설정 / 로그인</summary>
+<p class="small">GitHub: 코드 · Render: 화면 · Supabase Free: 자료. 설정 방법은 ZIP의 시작 안내를 참고하세요. 이 기기에는 작업 자료가 남으므로 개인 기기를 사용하세요.</p>
+<form id="cloudLogin"><fieldset id="loginFields" style="border:0;padding:0"><div class="formrow">
+<label>Supabase Project URL<input id="serverUrl" type="url" required placeholder="https://프로젝트.supabase.co"></label>
+<label>Publishable key / anon key<input id="publicKey" required autocomplete="off" placeholder="공개 키만 입력"></label></div><div class="formrow">
+<label>이메일<input id="loginEmail" type="email" required autocomplete="username"></label>
+<label>비밀번호<input id="loginPassword" type="password" required autocomplete="current-password"></label><button class="primary">로그인</button></div></fieldset></form>
+<div id="cloudActions" hidden><button id="cloudLoad">서버 자료 불러오기</button> <button id="cloudFirst">현재 자료 첫 저장</button> <button id="cloudRetry">저장 재시도</button> <button id="cloudLogout">백업 후 로그아웃</button></div>
+<p class="small">로그인은 창을 새로 열거나 새로고침하면 다시 필요합니다. 서버 연결 전에는 기존 브라우저 자료를 유지하며 자동으로 덮어쓰지 않습니다.</p>
+</details></aside>
+<main><div class="breadcrumb">교육 업무   평가 관리</div><h1>수행평가 성적 관리</h1><p>학년별 평가 계획과 학급별 채점 결과를 관리합니다.</p><div class="contextbar"><label>현재 학교<select id="schoolSelect"></select></label><label>현재 학급<select id="classSelect"></select></label><span class="small" id="scopeNote">학급을 등록해 주세요.</span></div>
+<nav class="tabs" role="tablist" aria-label="수행평가 관리 단계"><button id="tab-schools" role="tab" aria-controls="schools" data-tab="schools">01 학교 설정</button><button id="tab-school" role="tab" aria-controls="school" data-tab="school">02 학년도 학생</button><button id="tab-evals" role="tab" aria-controls="evals" data-tab="evals">03 평가 등록</button><button id="tab-rubrics" role="tab" aria-controls="rubrics" data-tab="rubrics">04 루브릭 설정</button><button id="tab-grading" role="tab" aria-controls="grading" data-tab="grading">05 학생별 채점</button><button id="tab-results" role="tab" aria-controls="results" data-tab="results">06 성적 조회</button></nav>
+<section id="schools" role="tabpanel" aria-labelledby="tab-schools"><div class="grid"><div class="panel"><h2>학교 등록</h2><p class="small">학교마다 학급, 학생, 평가와 점수를 따로 관리합니다.</p><form id="schoolForm"><label>학교 이름<input id="schoolName" maxlength="80" placeholder="예: 한빛중학교" required></label><button class="primary">학교 추가</button></form></div><div class="panel"><h2>등록된 학교</h2><div id="schoolList"></div><form id="renameSchoolForm" style="margin-top:20px"><label>현재 학교 이름 수정<input id="renameSchoolName" maxlength="80" required></label><button type="submit">이름 저장</button></form><p class="small" style="margin-top:12px">기존 자료는 ‘기존 학교’로 보관됩니다. 실제 학교 이름으로 수정해 주세요.</p></div></div></section><section id="school" role="tabpanel" aria-labelledby="tab-school">
+<div class="panel"><div class="toolbar"><h2>학년도와 학급</h2><button type="button" id="deleteClass" class="danger">현재 학급 삭제</button></div><div id="legacyGradeNotice"></div><form id="classForm" class="formrow"><label>학년도<input id="year" type="number" min="2000" max="2200" required></label><label>학년<select id="classGrade"><option value="1">1학년</option><option value="2">2학년</option><option value="3">3학년</option></select></label><label>반<input id="className" placeholder="예: 3반" maxlength="60" required></label><button class="primary">학급 추가</button></form><div class="small">같은 학년도 학년의 학급은 평가와 루브릭을 공유하고, 학생 점수는 각각 관리합니다.</div></div>
+<div class="grid"><div class="panel"><h2>학생 일괄 등록</h2><p class="small">한 줄에 한 학생씩 입력하세요. 엑셀의 번호 이름 두 열을 복사해서 붙여넣을 수 있습니다.</p><form id="studentForm"><label>번호와 이름<textarea id="studentText" rows="8" placeholder="1 김민준&#10;2 이서연&#10;3 박지우" required></textarea></label><p class="small">번호와 이름은 탭, 쉼표 또는 공백으로 구분합니다. 등록된 번호는 중복 추가할 수 없습니다.</p><button class="primary">명단에 추가</button></form></div><div class="panel"><div class="toolbar"><h2>등록된 학생</h2><span class="badge" id="studentCount">0명</span></div><div id="students"></div></div></div>
+</section>
+<section id="evals" role="tabpanel" aria-labelledby="tab-evals" hidden><div class="panel"><h2>평가를 설정할 학년</h2><div class="formrow eval-scope"><label>학년도<input id="evalYear" type="number" min="2000" max="2200" step="1" required></label><label>학년<select id="evalGrade"><option value="1">1학년</option><option value="2">2학년</option><option value="3">3학년</option></select></label></div><p class="small">해당 학년의 모든 반에 동일한 평가가 적용됩니다.</p></div><div class="grid"><div class="panel"><h2>평가 추가</h2><p class="small" id="evalContext"></p><form id="evalForm"><label>평가 이름<input id="evalName" maxlength="80" placeholder="예: 독서 발표, 탐구 보고서" required></label><label>평가 만점<input id="evalMax" type="number" min="1" max="1000" step="1" value="20" required></label><button class="primary">평가 추가</button></form><p class="small" style="margin-top:16px">평가는 개수 제한 없이 추가할 수 있습니다. 평가를 추가한 후 루브릭을 설정하세요.</p></div><div class="panel"><h2>등록된 평가</h2><div id="evalList"></div></div></div></section>
+<section id="rubrics" role="tabpanel" aria-labelledby="tab-rubrics" hidden><div class="panel"><div class="toolbar"><h2>평가별 루브릭</h2><label>평가 선택<select id="rubricEval"></select></label></div><div id="rubricContent"></div></div></section>
+<section id="grading" role="tabpanel" aria-labelledby="tab-grading" hidden><div class="panel"><div class="toolbar"><div><h2>학생별 채점</h2><p class="small" id="gradeContext"></p></div><label>평가 선택<select id="gradeEval"></select></label></div><div id="gradeContent"></div></div></section>
+<section id="results" role="tabpanel" aria-labelledby="tab-results" hidden><div class="panel"><div class="toolbar"><h2>평가 유형별 성적 조회</h2><span class="badge" id="resultScope"></span></div><div id="resultContent"></div></div></section><footer>서버 로그인 후 자료 불러오기/첫 저장을 완료하면 변경 내용이 서버에 자동 저장됩니다. ‘서버 저장 완료’를 확인하고 종료하세요. 전체 JSON 백업을 정기적으로 다른 저장장치에도 보관하세요.</footer>
+</main><div id="message" role="status" aria-live="polite"></div>
+<script>
+'use strict';
+const KEY='performance-rubric-v4';const $=id=>document.getElementById(id);const uid=()=>crypto.randomUUID();const fmt=n=>Number(n.toFixed(2)).toString();let db={version:3,classes:[],evaluations:[],active:null},store={version:4,schools:[],activeSchool:null},activeEval=null,tab='schools',dirty=false,timer;
+try{
+ const current=JSON.parse(localStorage.getItem(KEY));
+ if(current&&Array.isArray(current.schools)){store=current;db=store.schools.find(s=>s.id===store.activeSchool)?.data??db}
+ else {const old=JSON.parse(localStorage.getItem('performance-rubric-v3')||localStorage.getItem('performance-rubric-v2'));if(old&&Array.isArray(old.classes)){db=migrateData(old);const school={id:uid(),name:'기존 학교',data:db};store.schools.push(school);store.activeSchool=school.id}}
+}catch(e){$('saveState').textContent='저장된 내용을 불러오지 못했습니다'}
+const currentSchool=()=>store.schools.find(s=>s.id===store.activeSchool);
+const cls=()=>db.classes.find(c=>c.id===db.active);const evaluation=()=>db.evaluations.find(e=>e.id===activeEval);const classEvaluations=(c=cls())=>c?db.evaluations.filter(e=>e.year===c.year&&e.grade===c.grade&&(!e.legacyClassId||e.legacyClassId===c.id)):[];const scopedEvaluations=()=>db.evaluations.filter(e=>e.year===Number($('evalYear').value)&&e.grade===$('evalGrade').value);const classLabel=c=>`${c.year}학년도 ${c.grade?c.grade+'학년 ':''}${c.name}`;
+function el(tag,attrs={},text){const node=document.createElement(tag);for(const [k,v] of Object.entries(attrs)){if(k==='class')node.className=v;else node.setAttribute(k,v)}if(text!==undefined)node.textContent=text;return node}
+function notify(text){$('message').textContent=text;clearTimeout(timer);timer=setTimeout(()=>$('message').textContent='',4500)}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(store));$('saveState').textContent='브라우저 저장됨';if(window.cloudChanged)window.cloudChanged()}catch(e){$('saveState').textContent='저장 실패   현재 화면에서만 유지';notify('브라우저 저장 공간을 사용할 수 없습니다. 현재 내용을 유지한 채 사용하세요.')}}
+function empty(target,text){target.replaceChildren(el('div',{class:'empty'},text))}
+function leaveDraft(){return !dirty||confirm('저장하지 않은 루브릭 변경이 있습니다. 변경을 버리고 이동할까요?')}
+function switchTab(next){if(next===tab)return;if(!leaveDraft())return;dirty=false;tab=next;render()}
+for(const b of document.querySelectorAll('[data-tab]')){b.addEventListener('click',()=>switchTab(b.dataset.tab));b.addEventListener('keydown',e=>{const buttons=[...document.querySelectorAll('[data-tab]')];let i=buttons.indexOf(b);if(e.key==='ArrowRight')i=(i+1)%buttons.length;else if(e.key==='ArrowLeft')i=(i+buttons.length-1)%buttons.length;else if(e.key==='Home')i=0;else if(e.key==='End')i=buttons.length-1;else return;e.preventDefault();switchTab(buttons[i].dataset.tab);document.querySelector(`[data-tab="${tab}"]`).focus()})}
+function options(select,items,value,placeholder){select.replaceChildren();if(!items.length)select.append(el('option',{value:''},placeholder));for(const item of items)select.append(el('option',{value:item.id},item.label??item.name));select.value=value??'';select.disabled=!items.length}
+function render(){
+renderSchools();
+const c=cls(),available=classEvaluations();
+if(tab==='grading'){if(!available.some(e=>e.id===activeEval))activeEval=available[0]?.id??null}
+else if(!evaluation())activeEval=available[0]?.id??db.evaluations[0]?.id??null;
+for(const b of document.querySelectorAll('[data-tab]')){const on=b.dataset.tab===tab;b.setAttribute('aria-selected',on);b.tabIndex=on?0:-1;$(b.dataset.tab).hidden=!on}
+options($('classSelect'),db.classes.map(c=>({...c,label:classLabel(c)})),db.active,'학급을 먼저 추가하세요');
+$('scopeNote').textContent=c?classLabel(c)+' '+c.students.length+'명':'학급을 등록해 주세요.';
+$('studentCount').textContent=(c?.students.length??0)+'명';
+$('evalContext').textContent=$('evalYear').value+'학년도   '+$('evalGrade').value+'학년 공통 평가';
+$('deleteClass').disabled=!c;renderStudents();renderEvaluations();renderLegacyGrade();
+options($('rubricEval'),db.evaluations.map(e=>({...e,label:e.year+'   '+(e.grade?e.grade+'학년':'학년 미지정')+'   '+e.name})),activeEval,'평가를 먼저 추가하세요');
+options($('gradeEval'),available,activeEval,'해당 학년의 평가를 먼저 추가하세요');
+if(tab==='rubrics')renderRubric();if(tab==='grading')renderGrades();if(tab==='results')renderResults();
+}
+$('year').value=new Date().getFullYear();$('evalYear').value=cls()?.year??new Date().getFullYear();$('evalGrade').value=cls()?.grade||'1';
+$('classForm').addEventListener('submit',e=>{e.preventDefault();if(!currentSchool())return notify('학교 설정에서 학교를 먼저 등록하세요.');const year=Number($('year').value),grade=$('classGrade').value,name=$('className').value.trim();if(!['1','2','3'].includes(grade))return notify('1~3학년 중에서 선택하세요.');if(!name)return notify('반을 입력하세요.');if(db.classes.some(c=>c.year===year&&c.grade===grade&&c.name===name))return notify('이미 등록된 학급입니다. 위에서 선택하세요.');const c={id:uid(),year,grade,name,students:[]};db.classes.push(c);db.active=c.id;activeEval=null;$('evalYear').value=year;$('evalGrade').value=grade;$('className').value='';save();render();notify('학급을 추가했습니다.')});
+$('classSelect').addEventListener('change',e=>{if(!leaveDraft()){e.target.value=db.active;return}dirty=false;db.active=e.target.value;activeEval=null;$('studentText').value='';$('evalYear').value=cls().year;$('evalGrade').value=cls().grade||'1';save();render()});
+function parseStudents(raw,existing){const seen=new Set(existing.map(s=>s.number));const result=[];raw.split(/\r?\n/).forEach((line,i)=>{if(!line.trim())return;const match=line.trim().match(/^(\d+)[\s,]+(.+)$/);if(!match||Number(match[1])<1)throw Error(`${i+1}번째 줄: 번호와 이름을 확인하세요.`);const number=String(Number(match[1])),name=match[2].trim();if(!name||/[\t,]/.test(name))throw Error(`${i+1}번째 줄: 번호 이름 두 열만 붙여넣으세요.`);if(seen.has(number))throw Error(`${i+1}번째 줄: ${number}번이 중복됩니다.`);seen.add(number);result.push({id:uid(),number,name})});if(!result.length)throw Error('학생 명단을 입력하세요.');return result}
+$('studentForm').addEventListener('submit',e=>{e.preventDefault();const c=cls();if(!c)return notify('학급을 먼저 추가하세요.');try{const rows=parseStudents($('studentText').value,c.students);c.students.push(...rows);c.students.sort((a,b)=>Number(a.number)-Number(b.number));$('studentText').value='';save();render();notify(`${rows.length}명을 추가했습니다.`)}catch(error){notify(error.message)}});
+function removeStudent(c,studentId){
+  c.students=c.students.filter(s=>s.id!==studentId);
+  for(const ev of db.evaluations)delete ev.scores[studentId];
+}
+function removeClass(classId){
+  const c=db.classes.find(c=>c.id===classId);if(!c)return;
+  for(const s of [...c.students])removeStudent(c,s.id);
+  db.evaluations=db.evaluations.filter(e=>e.legacyClassId!==classId);
+  db.classes=db.classes.filter(c=>c.id!==classId);
+  if(db.active===classId)db.active=db.classes[0]?.id??null;
+}
+$('deleteClass').addEventListener('click',()=>{
+  const c=cls();if(!c)return;
+  if(!confirm(classLabel(c)+'을 삭제할까요?\n학생 '+c.students.length+'명과 해당 학생의 모든 점수가 함께 삭제됩니다. 학년 공통 평가와 다른 반의 자료는 유지됩니다.\n삭제한 자료는 되돌릴 수 없습니다.'))return;
+  removeClass(c.id);activeEval=null;$('studentText').value='';
+  $('evalYear').value=cls()?.year??new Date().getFullYear();$('evalGrade').value=['1','2','3'].includes(cls()?.grade)?cls().grade:'1';
+  save();render();notify('학급을 삭제했습니다.');
+});
+function renderStudents(){
+  const c=cls();if(!c?.students.length)return empty($('students'),'아직 등록된 학생이 없습니다.');
+  const table=el('table'),head=el('tr');
+  for(const title of ['번호','이름','관리'])head.append(el('th',{scope:'col'},title));
+  const thead=el('thead');thead.append(head);table.append(thead);const body=el('tbody');
+  for(const s of c.students){
+    const row=el('tr'),actions=el('td'),button=el('button',{type:'button',class:'danger student-delete','aria-label':s.number+'번 '+s.name+' 삭제'},'삭제');
+    button.onclick=()=>{if(!confirm(s.number+'번 '+s.name+' 학생을 삭제할까요?\n이 학생의 모든 평가 점수도 함께 삭제되며 되돌릴 수 없습니다.'))return;removeStudent(c,s.id);save();render();notify('학생을 삭제했습니다.')};
+    actions.append(button);row.append(el('td',{},s.number),el('td',{},s.name),actions);body.append(row);
+  }
+  table.append(body);$('students').replaceChildren(table);
+}
+$('evalYear').addEventListener('change',()=>render());$('evalGrade').addEventListener('change',()=>render());
+$('evalForm').addEventListener('submit',e=>{e.preventDefault();if(!currentSchool())return notify('학교 설정에서 학교를 먼저 등록하세요.');if(!$('evalYear').reportValidity())return;const year=Number($('evalYear').value),grade=$('evalGrade').value,name=$('evalName').value.trim();if(!['1','2','3'].includes(grade))return notify('1~3학년 중에서 선택하세요.');if(!name)return notify('평가 이름을 입력하세요.');if(scopedEvaluations().some(v=>v.name===name))return notify('이 학년에 같은 이름의 평가가 있습니다.');const ev={id:uid(),year,grade,name,max:Number($('evalMax').value),criteria:[],scores:{}};db.evaluations.push(ev);activeEval=ev.id;$('evalName').value='';save();render();notify('학년 공통 평가를 추가했습니다.')});
+function renderEvaluations(){const list=scopedEvaluations();if(!list.length)return empty($('evalList'),'이 학년의 평가를 추가하세요.');$('evalList').replaceChildren();for(const ev of list){const card=el('div',{class:'evalcard'}),info=el('div');info.append(el('h3',{},ev.name),el('span',{class:'small'},fmt(ev.max)+'점 만점   '+(ev.criteria.length?'기준 '+ev.criteria.length+'개':'루브릭 미설정')));const b=el('button',{type:'button'},'루브릭 설정');b.onclick=()=>{activeEval=ev.id;switchTab('rubrics')};card.append(info,b);$('evalList').append(card)}}
+$('rubricEval').onchange=e=>{if(!leaveDraft()){e.target.value=activeEval;return}activeEval=e.target.value;dirty=false;render()};$('gradeEval').onchange=e=>{activeEval=e.target.value;renderGrades()};
+function field(text,input){const l=el('label',{},text);l.append(input);return l}
+function rubricRow(data={name:'',max:5,levels:[5,4,3,2,0]}){const row=el('div',{class:'rubricrow'});row.append(el('span',{class:'idx'},''));const name=el('input',{type:'text',required:'',maxlength:'80','data-field':'name',placeholder:'예: 근거의 타당성'});name.value=data.name;const max=el('input',{type:'number',min:'.01',max:'1000',step:'.01',required:'','data-field':'max'});max.value=data.max;const levels=el('input',{type:'text',required:'','data-field':'levels',placeholder:'예: 5, 4, 3, 2, 0'});levels.value=data.levels.join(', ');const l=field('선택 가능한 점수 (쉼표 구분)',levels);l.className='levels';const remove=el('button',{type:'button'},'삭제');remove.onclick=()=>{row.remove();dirty=true;renumber();previewSum()};row.append(field('평가 기준',name),field('배점',max),l,remove);row.addEventListener('input',()=>{dirty=true;previewSum()});return row}
+function renumber(){document.querySelectorAll('.rubricrow').forEach((r,i)=>r.querySelector('.idx').textContent=String(i+1).padStart(2,'0'))}
+function previewSum(){const total=[...document.querySelectorAll('[data-field="max"]')].reduce((s,n)=>s+(Number(n.value)||0),0);const max=Number($('editMax').value);$('rubricSum').textContent=`기준 배점 합계 ${fmt(total)}점 / 평가 만점 ${fmt(max||0)}점`;$('rubricSum').className='notice'+(Math.abs(total-max)>.0001?' error':'')}
+function renderRubric(){const ev=evaluation();const root=$('rubricContent');if(!ev)return empty(root,'평가 등록 탭에서 평가를 먼저 추가하세요.');const form=el('form');const top=el('div',{class:'formrow'});const name=el('input',{id:'editName',required:'',maxlength:'80'});name.value=ev.name;const max=el('input',{id:'editMax',type:'number',min:'1',max:'1000',step:'1',required:''});max.value=ev.max;top.append(field('평가 이름',name),field('평가 만점',max));form.append(el('div',{class:'notice'},ev.year+'학년도   '+(ev.grade?ev.grade+'학년 공통 평가':'학년 미지정 평가')),top,el('p',{class:'small'},'기준과 부분점수를 직접 입력하세요. 기준별 배점 합계가 평가 만점과 같아야 저장할 수 있습니다.'));const rows=el('div',{id:'rubricRows'});ev.criteria.forEach(r=>rows.append(rubricRow(r)));form.append(rows);const add=el('button',{type:'button'},'+ 기준 추가');add.onclick=()=>{rows.append(rubricRow());dirty=true;renumber();previewSum()};form.append(add,el('div',{id:'rubricSum',class:'notice'}));const submit=el('button',{class:'primary',type:'submit'},'루브릭 저장');form.append(submit);form.addEventListener('input',()=>{dirty=true;previewSum()});form.onsubmit=saveRubric;root.replaceChildren(form);renumber();previewSum()}
+function validateRubric(rows,max){if(!rows.length)throw Error('평가 기준을 하나 이상 추가하세요.');for(const r of rows){if(!r.name)throw Error('모든 평가 기준의 이름을 입력하세요.');if(!Number.isFinite(r.max)||r.max<=0||r.max>1000)throw Error('기준 배점은 0보다 크고 1000 이하여야 합니다.');if(!r.levels.length||r.levels.some(n=>!Number.isFinite(n)||n<0||n>r.max||Math.abs(n*100-Math.round(n*100))>.00001))throw Error('부분점수는 0점부터 기준 배점까지, 소수 둘째 자리 이내로 입력하세요.');if(!r.levels.includes(r.max))throw Error(`「${r.name}」의 선택 점수에 만점 ${fmt(r.max)}점을 포함하세요.`);r.levels=[...new Set(r.levels)].sort((a,b)=>b-a)}if(Math.abs(rows.reduce((s,r)=>s+r.max,0)-max)>.0001)throw Error('기준 배점 합계와 평가 만점을 일치시켜 주세요.');return rows}
+function saveRubric(event){event.preventDefault();const ev=evaluation(),name=$('editName').value.trim(),max=Number($('editMax').value);try{if(!name)throw Error('평가 이름을 입력하세요.');if(db.evaluations.some(e=>e.id!==ev.id&&e.year===ev.year&&e.grade===ev.grade&&e.name===name))throw Error('같은 이름의 평가가 있습니다.');const criteria=validateRubric([...document.querySelectorAll('.rubricrow')].map(row=>({name:row.querySelector('[data-field=name]').value.trim(),max:Number(row.querySelector('[data-field=max]').value),levels:row.querySelector('[data-field=levels]').value.split(',').map(s=>s.trim()===''?NaN:Number(s.trim()))})),max);const changed=JSON.stringify(criteria)!==JSON.stringify(ev.criteria)||max!==ev.max;const graded=Object.values(ev.scores).some(scores=>scores.some(s=>s!==null));if(changed&&graded&&!confirm('학년 공통 루브릭을 변경하면 이 평가를 사용하는 모든 반의 학생 점수가 초기화됩니다. 변경 내용을 저장할까요?'))return;ev.name=name;ev.max=max;ev.criteria=criteria;if(changed)ev.scores={};dirty=false;save();render();notify('루브릭을 저장했습니다. 학생별 채점 탭에서 평가하세요.')}catch(e){notify(e.message)}}
+function totalScore(ev,studentId){const scores=ev.scores[studentId]??[];return {done:scores.filter(n=>n!==null&&n!==undefined).length,total:scores.reduce((s,n)=>s+(n??0),0)}}
+function renderGrades(){const c=cls(),ev=evaluation(),root=$('gradeContent');$('gradeContext').textContent=c?`${c.year}학년도   ${c.name}`:'';if(!c)return empty(root,'학년도 학생 탭에서 학급을 먼저 등록하세요.');if(!ev||!classEvaluations().some(e=>e.id===ev.id))return empty(root,'이 학년의 평가를 먼저 등록하세요.');if(!ev.criteria.length)return empty(root,'루브릭 설정 탭에서 평가 기준과 부분점수를 저장하세요.');if(!c.students.length)return empty(root,'학년도 학생 탭에서 학생 명단을 먼저 등록하세요.');const notice=el('div',{class:'notice'},`${ev.name}   ${fmt(ev.max)}점 만점 | 미평가와 0점은 구분됩니다. 선택한 점수는 자동 저장됩니다.`);const wrap=el('div',{class:'tablewrap'});const table=el('table');const thead=el('thead'),head=el('tr');head.append(el('th',{scope:'col'},'번호'),el('th',{scope:'col'},'이름'));ev.criteria.forEach(r=>head.append(el('th',{scope:'col'},`${r.name} (${fmt(r.max)}점)`)));head.append(el('th',{scope:'col'},'합계'),el('th',{scope:'col'},'평가 상태'));thead.append(head);table.append(thead);const body=el('tbody');for(const s of c.students){const row=el('tr');row.append(el('td',{},s.number),el('th',{scope:'row',class:'studentname'},s.name));const total=el('td',{class:'score'}),status=el('td');const update=()=>{const result=totalScore(ev,s.id);total.textContent=`${fmt(result.total)} / ${fmt(ev.max)}`;status.textContent=result.done===ev.criteria.length?'평가 완료':`${result.done}/${ev.criteria.length}   미완료`};ev.criteria.forEach((r,i)=>{const cell=el('td'),select=el('select',{'aria-label':`${s.number}번 ${s.name}   ${r.name}`});select.append(el('option',{value:''},'미평가'));r.levels.forEach(n=>select.append(el('option',{value:String(n)},`${fmt(n)}점`)));select.value=ev.scores[s.id]?.[i]===null||ev.scores[s.id]?.[i]===undefined?'':String(ev.scores[s.id][i]);select.onchange=()=>{ev.scores[s.id]??=Array(ev.criteria.length).fill(null);ev.scores[s.id][i]=select.value===''?null:Number(select.value);save();update()};cell.append(select);row.append(cell)});row.append(total,status);update();body.append(row)}table.append(body);wrap.append(table);root.replaceChildren(notice,wrap)}
+// Upgrade existing class-owned evaluations without losing student scores.
+function migrateData(source){
+  if(source.version===3&&Array.isArray(source.evaluations))return source;
+  const next={version:3,classes:[],evaluations:[],active:source.active};
+  for(const old of source.classes){
+    const match=old.name.match(/([1-6])\s*학년/);
+    const c={...old,grade:old.grade||(match?match[1]:'')};delete c.evaluations;next.classes.push(c);
+    for(const ev of old.evaluations??[]){
+      const same=c.grade&&next.evaluations.find(v=>v.year===c.year&&v.grade===c.grade&&v.name===ev.name&&v.max===ev.max&&JSON.stringify(v.criteria)===JSON.stringify(ev.criteria));
+      if(same){Object.assign(same.scores,ev.scores);continue}
+      let name=ev.name;let suffix=1;
+      while(next.evaluations.some(v=>v.year===c.year&&v.grade===c.grade&&v.name===name))name=ev.name+' ('+old.name+(suffix++>1?' '+suffix:'')+')';
+      next.evaluations.push({...ev,name,year:c.year,grade:c.grade,...(!c.grade?{legacyClassId:c.id}:{})});
+    }
+  }
+  return next;
+}
+function renderLegacyGrade(){
+  const root=$('legacyGradeNotice'),c=cls();root.replaceChildren();
+  if(!c||c.grade)return;
+  root.append(el('p',{class:'notice'},'기존 학급의 학년을 확인할 수 없습니다. 학년을 지정하면 기존 평가와 점수가 해당 학년에 연결됩니다.'));
+  const select=el('select',{'aria-label':'기존 학급 학년 지정'});
+  select.append(el('option',{value:''},'학년 선택'));
+  for(let i=1;i<=3;i++)select.append(el('option',{value:String(i)},i+'학년'));
+  const b=el('button',{type:'button'},'학년 지정');b.onclick=()=>{
+    if(!select.value)return notify('학년을 선택하세요.');
+    if(db.classes.some(v=>v.id!==c.id&&v.year===c.year&&v.grade===select.value&&v.name===c.name))return notify('해당 학년에 같은 이름의 학급이 있습니다.');
+    c.grade=select.value;
+    for(const ev of db.evaluations.filter(e=>e.legacyClassId===c.id)){
+      ev.grade=c.grade;delete ev.legacyClassId;
+      let name=ev.name;let suffix=1;
+      while(db.evaluations.some(e=>e.id!==ev.id&&e.year===ev.year&&e.grade===ev.grade&&e.name===name))name=ev.name+' (기존 '+(suffix++)+')';
+      ev.name=name;
+    }
+    $('evalGrade').value=c.grade;save();render();notify('학년을 지정했습니다.');
+  };const row=el('div',{class:'formrow'});row.append(select,b);root.append(row);
+}
+function resultFor(ev,sid){
+  const raw=totalScore(ev,sid);
+  return {...raw,total:Math.round(raw.total*100)/100,complete:ev.criteria.length>0&&raw.done===ev.criteria.length,
+    status:!ev.criteria.length?'루브릭 미설정':raw.done===0?'미평가':raw.done===ev.criteria.length?'평가 완료':'채점 중 ('+raw.done+'/'+ev.criteria.length+')'};
+}
+function resultsForStudent(evals,sid){
+  const items=evals.map(e=>resultFor(e,sid));
+  return {items,total:Math.round(items.reduce((sum,r)=>sum+r.total,0)*100)/100,complete:items.length>0&&items.every(r=>r.complete),done:items.filter(r=>r.complete).length};
+}
+function renderResults(){
+  const c=cls(),root=$('resultContent'),evals=classEvaluations();
+  $('resultScope').textContent=c?classLabel(c):'학급 미선택';
+  if(!c)return empty(root,'먼저 학급과 학생을 등록하세요.');
+  if(!evals.length)return empty(root,'평가 등록 탭에서 이 학년의 평가를 추가하세요.');
+  if(!c.students.length)return empty(root,'이 학급의 학생을 등록하세요.');
+  const completed=c.students.filter(s=>resultsForStudent(evals,s.id).complete).length;
+  const metrics=el('div',{class:'metrics'});
+  for(const [label,value] of [['평가 유형',evals.length+'개'],['전체 평가 만점',fmt(evals.reduce((sum,e)=>sum+e.max,0))+'점'],['모든 평가 완료',completed+' / '+c.students.length+'명']]){const box=el('div',{class:'metric'});box.append(el('span',{},label),el('strong',{},value));metrics.append(box)}
+  const table=el('table'),thead=el('thead'),head=el('tr');
+  for(const label of ['번호','이름',...evals.map(e=>e.name+' ('+fmt(e.max)+'점)'),'현재 합계','평가 상태'])head.append(el('th',{scope:'col'},label));
+  thead.append(head);table.append(thead);const body=el('tbody');
+  for(const s of c.students){
+    const row=el('tr'),summary=resultsForStudent(evals,s.id);row.append(el('td',{},s.number),el('th',{scope:'row'},s.name));
+    for(const r of summary.items){const cell=el('td',{class:r.complete?'':'pending'});cell.append(el('strong',{},r.done?fmt(r.total)+'점':'—'));if(!r.complete)cell.append(el('div',{class:'small'},r.status));row.append(cell)}
+    row.append(el('td',{class:'score'},summary.items.some(r=>r.done)?fmt(summary.total)+'점':'—'),el('td',{},summary.complete?'전체 완료':summary.done+'/'+evals.length+'개 완료'));body.append(row);
+  }
+  table.append(body);const wrap=el('div',{class:'tablewrap'});wrap.append(table);
+  root.replaceChildren(metrics,wrap,el('p',{class:'small result-note'},'현재 합계에는 채점 중인 평가의 부분점수도 포함됩니다. 모든 평가가 완료되면 최종 합계로 확인하세요. 오른쪽 상단에서 현재 학급의 성적을 엑셀로 내보낼 수 있습니다.'));
+}
+function buildExportSheets(c,evals){
+  const summary=[['학년도','학년','학급','번호','이름',...evals.flatMap(e=>[e.name+' ('+fmt(e.max)+'점)',e.name+' 상태']),'현재 합계','전체 상태']];
+  const detail=[['학년도','학년','학급','번호','이름','평가 유형','평가 만점','루브릭 기준','기준 배점','취득 점수','채점 상태']];
+  for(const s of c.students){
+    const result=resultsForStudent(evals,s.id);
+    const identity=[c.year,c.grade?Number(c.grade):'미지정',c.name,Number(s.number),s.name];
+    summary.push([...identity,...result.items.flatMap(r=>[r.done?r.total:null,r.status]),result.items.some(r=>r.done)?result.total:null,result.complete?'전체 완료':result.done+'/'+evals.length+'개 완료']);
+    for(const ev of evals){
+      if(!ev.criteria.length)detail.push([...identity,ev.name,ev.max,'루브릭 미설정',null,null,'루브릭 미설정']);
+      ev.criteria.forEach((r,i)=>{const value=ev.scores[s.id]?.[i];detail.push([...identity,ev.name,ev.max,r.name,r.max,value??null,value===null||value===undefined?'미평가':'채점 완료'])});
+    }
+  }
+  return [{name:'성적 집계',rows:summary},{name:'루브릭 상세',rows:detail}];
+}
+// Minimal offline OOXML export. Strings are literal cells, never formulas.
+function xmlEscape(value){return String(value).replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g,'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&apos;')}
+function columnName(index){let result='';for(let n=index+1;n;n=Math.floor((n-1)/26))result=String.fromCharCode(65+(n-1)%26)+result;return result}
+function zipFiles(files){
+  const encoder=new TextEncoder(),locals=[],central=[];let offset=0;
+  const make=(size)=>new Uint8Array(size),u16=(arr,at,n)=>new DataView(arr.buffer).setUint16(at,n,true),u32=(arr,at,n)=>new DataView(arr.buffer).setUint32(at,n>>>0,true);
+  const crc32=data=>{let crc=0xffffffff;for(const byte of data){crc^=byte;for(let k=0;k<8;k++)crc=(crc>>>1)^((crc&1)?0xedb88320:0)}return (crc^0xffffffff)>>>0};
+  for(const [path,xml] of files){
+    const name=encoder.encode(path),data=encoder.encode(xml),crc=crc32(data),local=make(30+name.length);
+    u32(local,0,0x04034b50);u16(local,4,20);u16(local,10,0);u16(local,12,33);u32(local,14,crc);u32(local,18,data.length);u32(local,22,data.length);u16(local,26,name.length);local.set(name,30);
+    const entry=make(46+name.length);u32(entry,0,0x02014b50);u16(entry,4,20);u16(entry,6,20);u16(entry,14,33);u32(entry,16,crc);u32(entry,20,data.length);u32(entry,24,data.length);u16(entry,28,name.length);u32(entry,42,offset);entry.set(name,46);
+    locals.push(local,data);central.push(entry);offset+=local.length+data.length;
+  }
+  const centralSize=central.reduce((s,a)=>s+a.length,0),end=make(22);u32(end,0,0x06054b50);u16(end,8,files.length);u16(end,10,files.length);u32(end,12,centralSize);u32(end,16,offset);
+  const out=make(offset+centralSize+end.length);let cursor=0;for(const chunk of [...locals,...central,end]){out.set(chunk,cursor);cursor+=chunk.length}return out;
+}
+function buildXlsx(sheets){
+  const ns='http://schemas.openxmlformats.org/spreadsheetml/2006/main',rel='http://schemas.openxmlformats.org/officeDocument/2006/relationships';
+  const files=[];
+  files.push(['[Content_Types].xml','<?xml version="1.0" encoding="UTF-8"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>'+sheets.map((s,i)=>'<Override PartName="/xl/worksheets/sheet'+(i+1)+'.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>').join('')+'</Types>']);
+  files.push(['_rels/.rels','<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="'+rel+'/officeDocument" Target="xl/workbook.xml"/></Relationships>']);
+  files.push(['xl/workbook.xml','<workbook xmlns="'+ns+'" xmlns:r="'+rel+'"><sheets>'+sheets.map((s,i)=>'<sheet name="'+xmlEscape(s.name)+'" sheetId="'+(i+1)+'" r:id="rId'+(i+1)+'"/>').join('')+'</sheets></workbook>']);
+  files.push(['xl/_rels/workbook.xml.rels','<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'+sheets.map((s,i)=>'<Relationship Id="rId'+(i+1)+'" Type="'+rel+'/worksheet" Target="worksheets/sheet'+(i+1)+'.xml"/>').join('')+'<Relationship Id="rIdStyle" Type="'+rel+'/styles" Target="styles.xml"/></Relationships>']);
+  files.push(['xl/styles.xml','<styleSheet xmlns="'+ns+'"><numFmts count="1"><numFmt numFmtId="164" formatCode="0.##"/></numFmts><fonts count="2"><font><sz val="11"/><name val="맑은 고딕"/></font><font><b/><sz val="11"/><color rgb="FFFFFFFF"/><name val="맑은 고딕"/></font></fonts><fills count="3"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill><fill><patternFill patternType="solid"><fgColor rgb="FF163E68"/><bgColor indexed="64"/></patternFill></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs><cellXfs count="3"><xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/><xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyAlignment="1"><alignment vertical="center" wrapText="1"/></xf><xf numFmtId="164" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/></cellXfs><cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles></styleSheet>']);
+  sheets.forEach((sheet,i)=>{
+    const rows=sheet.rows;if(rows.length>1048576||rows[0].length>16384)throw Error('엑셀에서 지원하는 행 또는 열 개수를 초과했습니다.');
+    const last=columnName(rows[0].length-1)+rows.length;
+    const cols=rows[0].map((label,j)=>{const width=j<2?11:j===2?18:j===3?9:j===4?18:Math.min(44,Math.max(20,String(label).length*1.8));return '<col min="'+(j+1)+'" max="'+(j+1)+'" width="'+width+'" customWidth="1"/>'}).join('');
+    const data=rows.map((row,r)=>'<row r="'+(r+1)+'" ht="'+(r===0?48:23)+'" customHeight="1">'+row.map((v,c)=>{const ref=columnName(c)+(r+1);if(v===null||v===undefined)return '<c r="'+ref+'"/>';if(typeof v==='number'&&Number.isFinite(v))return '<c r="'+ref+'" s="2"><v>'+v+'</v></c>';return '<c r="'+ref+'" s="'+(r===0?1:0)+'" t="inlineStr"><is><t xml:space="preserve">'+xmlEscape(v)+'</t></is></c>'}).join('')+'</row>').join('');
+    files.push(['xl/worksheets/sheet'+(i+1)+'.xml','<worksheet xmlns="'+ns+'"><dimension ref="A1:'+last+'"/><sheetViews><sheetView workbookViewId="0"><pane xSplit="5" ySplit="1" topLeftCell="F2" activePane="bottomRight" state="frozen"/><selection pane="bottomRight" activeCell="F2" sqref="F2"/></sheetView></sheetViews><sheetFormatPr defaultRowHeight="23"/><cols>'+cols+'</cols><sheetData>'+data+'</sheetData><autoFilter ref="A1:'+last+'"/></worksheet>']);
+  });
+  return zipFiles(files);
+}
+$('exportExcel').addEventListener('click',()=>{
+  const c=cls(),evals=classEvaluations();
+  if(!c||!c.students.length)return notify('내보낼 학급과 학생을 먼저 등록하세요.');
+  if(!evals.length)return notify('이 학년의 평가를 먼저 등록하세요.');
+  if(dirty)return notify('루브릭 변경 내용을 저장하거나 취소한 후 내보내세요.');
+  try{
+    const bytes=buildXlsx(buildExportSheets(c,evals));const blob=new Blob([bytes],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+    const url=URL.createObjectURL(blob),link=el('a',{href:url,download:((currentSchool()?.name||'학교')+'_'+c.year+'_'+(c.grade||'학년미지정')+'학년_'+c.name+'_수행평가.xlsx').replace(/[\\/:*?"<>|]/g,'_')});
+    document.body.append(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);notify('현재 학급의 성적 집계와 루브릭 상세를 내보냈습니다.');
+  }catch(e){notify('내보내기 실패: '+e.message)}
+});
+
+function renderSchools(){
+ options($('schoolSelect'),store.schools,store.activeSchool,'학교를 먼저 등록하세요');
+ $('renameSchoolForm').hidden=!currentSchool();$('renameSchoolName').value=currentSchool()?.name??'';
+ const root=$('schoolList');if(!store.schools.length)return empty(root,'등록된 학교가 없습니다.');root.replaceChildren();
+ for(const school of store.schools){const row=el('div',{class:'evalcard'}),info=el('div');info.append(el('h3',{},school.name),el('span',{class:'small'},school.data.classes.length+'개 학급'));const b=el('button',{type:'button'},school.id===store.activeSchool?'선택됨':'선택');b.disabled=school.id===store.activeSchool;b.onclick=()=>selectSchool(school.id);row.append(info,b);root.append(row)}
+}
+function selectSchool(id){
+ if(!leaveDraft()){$('schoolSelect').value=store.activeSchool;return}
+ const school=store.schools.find(s=>s.id===id);if(!school)return;
+ dirty=false;store.activeSchool=id;db=school.data;activeEval=null;$('studentText').value='';$('className').value='';$('evalName').value='';
+ $('evalYear').value=cls()?.year??new Date().getFullYear();$('evalGrade').value=cls()?.grade||'1';save();render();
+}
+$('schoolSelect').addEventListener('change',e=>selectSchool(e.target.value));
+$('schoolForm').addEventListener('submit',e=>{e.preventDefault();const name=$('schoolName').value.trim();if(!name)return notify('학교 이름을 입력하세요.');if(store.schools.some(s=>s.name===name))return notify('이미 등록된 학교입니다.');const school={id:uid(),name,data:{version:3,classes:[],evaluations:[],active:null}};store.schools.push(school);$('schoolName').value='';selectSchool(school.id);notify('학교를 추가했습니다. 학년도 학생 탭에서 학급을 등록하세요.')});
+$('renameSchoolForm').addEventListener('submit',e=>{e.preventDefault();const school=currentSchool(),name=$('renameSchoolName').value.trim();if(!school)return;if(!name)return notify('학교 이름을 입력하세요.');if(store.schools.some(s=>s.id!==school.id&&s.name===name))return notify('이미 등록된 학교 이름입니다.');school.name=name;save();render();notify('학교 이름을 수정했습니다.')});
+window.addEventListener('beforeunload',e=>{if(dirty){e.preventDefault();e.returnValue=''}});render();
+</script><script>'use strict';
+// Portable JSON format. No vendor SDK or build dependency.
+const GradeData = (() => {
+  const MAX_BYTES = 4 * 1024 * 1024;
+  function validate(input) {
+    const value = input?.format === 'gradebook-backup' ? input.data : input;
+    const fail = () => { throw Error('지원하지 않거나 손상된 전체 백업입니다. 원본 파일을 보관하세요.'); };
+    const obj = x => x && typeof x === 'object' && !Array.isArray(x);
+    const str = x => typeof x === 'string' && x.length > 0 && x.length <= 200;
+    const unique = a => new Set(a.map(x => x.id)).size === a.length;
+    if (!obj(value) || value.version !== 4 || !Array.isArray(value.schools) || !unique(value.schools)) fail();
+    if (new TextEncoder().encode(JSON.stringify(value)).length > MAX_BYTES) throw Error('전체 자료는 4MB 이하만 지원합니다. 백업 후 학년별로 보관하세요.');
+    for (const s of value.schools) {
+      if (!obj(s) || !str(s.id) || !str(s.name) || !obj(s.data)) fail();
+      const d = s.data;
+      if (d.version !== 3 || !Array.isArray(d.classes) || !Array.isArray(d.evaluations) || !unique(d.classes) || !unique(d.evaluations)) fail();
+      const students = new Set();
+      for (const c of d.classes) {
+        if (!str(c.id) || !str(c.name) || !Number.isInteger(c.year) || c.year < 2000 || c.year > 2200 || !['','1','2','3','4','5','6'].includes(c.grade) || !Array.isArray(c.students)) fail();
+        for (const st of c.students) {
+          if (!str(st.id) || !str(st.name) || !['string','number'].includes(typeof st.number) || students.has(st.id)) fail();
+          students.add(st.id);
+        }
+      }
+      for (const e of d.evaluations) {
+        if (!str(e.id) || !str(e.name) || !Number.isInteger(e.year) || !['','1','2','3','4','5','6'].includes(e.grade) || !Number.isFinite(e.max) || e.max <= 0 || !Array.isArray(e.criteria) || !obj(e.scores)) fail();
+        for (const r of e.criteria) {
+          if (!str(r.name) || !Number.isFinite(r.max) || r.max <= 0 || !Array.isArray(r.levels) || !r.levels.length || r.levels.some(n => !Number.isFinite(n) || n < 0 || n > r.max)) fail();
+        }
+        for (const scores of Object.values(e.scores)) {
+          if (!Array.isArray(scores) || scores.length > e.criteria.length || scores.some((n,i) => n !== null && (!Number.isFinite(n) || !e.criteria[i].levels.includes(n)))) fail();
+        }
+      }
+      if (d.active !== null && !d.classes.some(c => c.id === d.active)) fail();
+    }
+    if (value.activeSchool !== null && !value.schools.some(s => s.id === value.activeSchool)) fail();
+    return JSON.parse(JSON.stringify(value));
+  }
+  return { validate, MAX_BYTES };
+})();
+if (typeof module !== 'undefined') module.exports = GradeData;
+</script><script>'use strict';
+(() => {
+  let session = null, config = null, revision = null, enabled = false;
+  let debounce, busy = false, pending = false, blocked = false, inFlight = null;
+  const status = message => { $('cloudStatus').textContent = message; };
+  const empty = () => ({version:4,schools:[],activeSchool:null});
+  const copy = () => GradeData.validate(store);
+  const lock = value => { document.querySelector('main').inert = value; };
+  function download(data, prefix = '수행평가-전체백업') {
+    const blob = new Blob([JSON.stringify({format:'gradebook-backup',version:1,createdAt:new Date().toISOString(),data},null,2)],{type:'application/json'});
+    const url = URL.createObjectURL(blob), a = document.createElement('a');
+    a.href = url; a.download = prefix+'-'+new Date().toISOString().replace(/[:.]/g,'-')+'.json'; a.click();
+    setTimeout(() => URL.revokeObjectURL(url),10000);
+  }
+  function replace(data) {
+    const clean = GradeData.validate(data);
+    // Commit to local storage before changing the UI. If quota fails, keep current data.
+    localStorage.setItem(KEY,JSON.stringify(clean));
+    store = clean; db = store.schools.find(s => s.id === store.activeSchool)?.data ?? {version:3,classes:[],evaluations:[],active:null};
+    activeEval = null; dirty = false;
+    $('evalYear').value = cls()?.year ?? new Date().getFullYear(); $('evalGrade').value = cls()?.grade || '1';
+    render();
+  }
+  function readConfig() {
+    const url = $('serverUrl').value.trim().replace(/\/$/,'');
+    const key = $('publicKey').value.trim();
+    if (!/^https:\/\/[a-z0-9-]+\.supabase\.co$/.test(url)) throw Error('Supabase Project URL(https://프로젝트.supabase.co)을 입력하세요.');
+    let valid = key.startsWith('sb_publishable_');
+    if (key.startsWith('eyJ')) {
+      try { valid = JSON.parse(atob(key.split('.')[1].replace(/-/g,'+').replace(/_/g,'/'))).role === 'anon'; } catch {}
+    }
+    if (!valid) throw Error('Publishable key 또는 anon 공개 키만 입력하세요. secret/service_role 키는 사용할 수 없습니다.');
+    return {url,key};
+  }
+  async function request(path, body, auth = true, method) {
+    const headers = {apikey:config.key,'Content-Type':'application/json'};
+    if (auth) headers.Authorization = 'Bearer '+session.access_token;
+    let response;
+    try { response = await fetch(config.url+path,{method:method || (body === undefined ? 'GET':'POST'),headers,body:body === undefined ? undefined:JSON.stringify(body),signal:AbortSignal.timeout(20000)}); }
+    catch { throw Error('서버에 연결하지 못했습니다. 자료는 브라우저에 남아 있습니다. 연결/프로젝트 일시정지 상태를 확인하세요.'); }
+    const text = await response.text();
+    let data; try { data = text ? JSON.parse(text):null; } catch { throw Error('서버 응답을 확인할 수 없습니다.'); }
+    if (!response.ok) {
+      if (String(data?.message).includes('REVISION_CONFLICT')) { blocked = true; enabled = false; throw Error('다른 기기에서 자료가 변경되었습니다. 전체 백업 후 「서버 자료 불러오기」로 확인하세요. 자동 저장을 중지했습니다.'); }
+      if (response.status === 401) throw Error('로그인이 만료되었습니다. 전체 백업 후 로그아웃하고 다시 로그인하세요.');
+      throw Error(data?.msg || data?.message || data?.error_description || '서버 요청 실패 ('+response.status+')');
+    }
+    return data;
+  }
+  async function refresh() {
+    if (!session) throw Error('먼저 로그인하세요.');
+    if (Date.now() > session.expires_at*1000 - 60000) {
+      const next = await request('/auth/v1/token?grant_type=refresh_token',{refresh_token:session.refresh_token},false);
+      session = {...next,expires_at:next.expires_at || Date.now()/1000+next.expires_in};
+    }
+  }
+  async function remote() {
+    await refresh();
+    const rows = await request('/rest/v1/gradebook_documents?select=revision,payload,updated_at&owner_id=eq.'+encodeURIComponent(session.user.id));
+    return rows[0] || null;
+  }
+  async function upload() {
+    if (!session || !enabled || blocked || busy) return;
+    busy = true; clearTimeout(debounce);
+    try {
+      await refresh();
+      // Keep the exact request after a lost response. Repeating its UUID is idempotent.
+      if (!inFlight) inFlight = {expected_revision:revision,new_revision:crypto.randomUUID(),document:copy()};
+      status('서버에 저장 중…');
+      const result = await request('/rest/v1/rpc/save_gradebook',inFlight);
+      revision = result;
+      const saved = JSON.stringify(inFlight.document); inFlight = null;
+      pending = JSON.stringify(store) !== saved;
+      status('서버 저장 완료 · '+new Date().toLocaleTimeString()+(pending?' · 추가 변경 저장 대기':''));
+      $('saveState').textContent = pending ? '추가 변경 저장 대기':'서버 저장 완료';
+    } catch (e) { pending = true; status(e.message); $('saveState').textContent = '서버 미저장 · 전체 백업 권장'; }
+    finally { busy = false; }
+    // Do not loop automatically after failure; user retries or next edit retries.
+    if (pending && !inFlight && enabled && !blocked) debounce = setTimeout(upload,1500);
+  }
+  window.cloudChanged = () => {
+    pending = true;
+    if (enabled && !blocked) { status('브라우저 저장됨 · 서버 저장 대기'); clearTimeout(debounce); debounce = setTimeout(upload,1500); }
+    else status(session ? '브라우저 저장됨 · 서버 저장을 시작하려면 자료 불러오기 또는 첫 저장을 선택하세요.':'브라우저에만 저장됨 · 서버 저장은 로그인 후 사용');
+  };
+  async function guarded(action) {
+    if (busy) return status('진행 중인 서버 요청이 끝난 후 다시 시도하세요.');
+    busy = true; lock(true);
+    try { await action(); } catch(e) { status(e.message); }
+    finally { busy = false; lock(false); }
+  }
+  $('cloudLogin').onsubmit = event => {
+    event.preventDefault();
+    guarded(async () => {
+      if (session) throw Error('계정을 바꾸려면 먼저 로그아웃하세요.');
+      config = readConfig();
+      localStorage.setItem('gradebook-cloud-config',JSON.stringify(config));
+      const result = await request('/auth/v1/token?grant_type=password',{email:$('loginEmail').value.trim(),password:$('loginPassword').value},false);
+      session = {...result,expires_at:result.expires_at || Date.now()/1000+result.expires_in};
+      $('loginPassword').value = ''; enabled = false; blocked = false; inFlight = null;
+      $('loginFields').disabled = true; $('cloudActions').hidden = false;
+      status('로그인됨: '+session.user.email+' · 서버 자료 불러오기 또는 첫 저장을 선택하세요.');
+    });
+  };
+  $('cloudLoad').onclick = () => guarded(async () => {
+    if (!leaveDraft()) return;
+    if (!confirm('현재 자료가 있으면 교체 전 백업을 내려받고 서버 자료로 바꿉니다. 계속할까요?')) return;
+    const row = await remote();
+    if (!row) throw Error('서버에 자료가 없습니다. 「현재 자료 첫 저장」을 누르세요.');
+    const data = GradeData.validate(row.payload);
+    if (store.schools.length) download(copy(),'수행평가-교체전백업');
+    replace(data); revision = row.revision; enabled = true; blocked = false; pending = false; inFlight = null;
+    $('saveState').textContent = '서버 자료 불러옴'; status('서버 자료 불러옴 · 이후 변경은 자동 저장됩니다.');
+  });
+  $('cloudFirst').onclick = async () => {
+    await guarded(async () => {
+      if (enabled) throw Error('이미 서버에 연결되어 있습니다. 「저장 재시도」를 사용하세요.');
+      const row = await remote();
+      if (row) throw Error('서버에 기존 자료가 있습니다. 먼저 서버 자료를 불러오세요. 현재 자료는 전체 백업으로 보관할 수 있습니다.');
+      copy(); revision = null; blocked = false; enabled = true; pending = true;
+    });
+    if (enabled && pending) await upload();
+  };
+  $('cloudRetry').onclick = () => { if (!enabled || blocked) return status('먼저 서버 자료 불러오기 또는 첫 저장을 선택하세요.'); upload(); };
+  $('cloudLogout').onclick = () => guarded(async () => {
+    if (!leaveDraft()) return;
+    if (!confirm('현재 자료를 백업하고 이 브라우저의 작업 자료를 지웁니다. 서버 자료는 유지됩니다. 로그아웃할까요?')) return;
+    if (store.schools.length) download(copy(),'수행평가-로그아웃백업');
+    clearTimeout(debounce); enabled = false;
+    try { await request('/auth/v1/logout',{},true); } catch {}
+    session = null; revision = null; pending = false; inFlight = null; blocked = false;
+    replace(empty()); $('loginFields').disabled = false; $('cloudActions').hidden = true;
+    $('saveState').textContent = '로그아웃'; status('로그아웃했습니다. 서버 자료는 다음 로그인 때 불러오세요.');
+  });
+  $('fullBackup').onclick = () => { try { if (dirty) return status('루브릭 변경 내용을 먼저 저장하세요.'); download(copy()); status('전체 백업을 내려받았습니다. 다운로드 폴더에서 파일을 확인하세요.'); } catch(e) { status(e.message); } };
+  $('importBackup').onchange = event => {
+    const file = event.target.files[0]; event.target.value = '';
+    if (!file) return;
+    guarded(async () => {
+      if (file.size > 8*1024*1024) throw Error('백업 파일이 너무 큽니다.');
+      if (!leaveDraft()) return;
+      let input = JSON.parse(await file.text());
+      if (input && [2,3].includes(input.version) && Array.isArray(input.classes)) {
+        const school = {id:uid(),name:'기존 학교',data:migrateData(input)};
+        input = {version:4,schools:[school],activeSchool:school.id};
+      }
+      const data = GradeData.validate(input);
+      if (!confirm('백업의 '+data.schools.length+'개 학교 자료로 전체 교체합니다. 현재 자료는 먼저 백업됩니다. 계속할까요?')) return;
+      if (store.schools.length) download(copy(),'수행평가-복원전백업');
+      replace(data); window.cloudChanged();
+    });
+  };
+  // Same-origin tabs must not silently overwrite each other's local copy.
+  window.addEventListener('storage',event => {
+    if (event.key === KEY) {
+      clearTimeout(debounce); enabled = false; blocked = true; lock(true);
+      status('다른 탭에서 자료가 변경되었습니다. 이 탭의 전체 백업을 받은 뒤 새로고침하세요. 중복 편집을 막았습니다.');
+    }
+  });
+  window.addEventListener('beforeunload',event => { if (pending || busy) { event.preventDefault(); event.returnValue = ''; } });
+  window.addEventListener('online',() => { if (enabled && pending && !blocked) upload(); });
+  try { const saved = JSON.parse(localStorage.getItem('gradebook-cloud-config')); if (saved) { $('serverUrl').value = saved.url || ''; $('publicKey').value = saved.key || ''; } } catch {}
+  status('브라우저 저장 모드 · 서버 저장은 아래 설정 후 로그인하세요.');
+})();
+</script></body></html>
+
+
+
+
